@@ -1,6 +1,6 @@
-# E-Labora
+# E-Labore
 
-O **E-Labora** é um projeto integrador desenvolvido por estudantes de Análise e Desenvolvimento de Sistemas da **FATEC São Sebastião**. A plataforma web tem como objetivo facilitar o envio, a organização, o acompanhamento e a validação das horas dos Projetos Integradores.
+O **E-Labore** é um projeto integrador desenvolvido por estudantes de Análise e Desenvolvimento de Sistemas da **FATEC São Sebastião**. A plataforma web tem como objetivo facilitar o envio, a organização, o acompanhamento e a validação das horas dos Projetos Integradores.
 
 ## Funcionalidades previstas
 
