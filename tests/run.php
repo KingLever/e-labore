@@ -94,5 +94,20 @@ if (runTest('falha de conexão não expõe credenciais na resposta', static func
     $failed++;
 }
 
+$routesFile = dirname(__DIR__) . '/routes/web.php';
+$routes = is_file($routesFile) ? require $routesFile : [];
+
+if (runTest('GET /health está associado ao controlador de saúde', static function () use ($routes): void {
+    $handler = $routes['GET /health'] ?? null;
+
+    if (!is_callable($handler)) {
+        throw new RuntimeException('A rota deve apontar para um método executável.');
+    }
+})) {
+    $passed++;
+} else {
+    $failed++;
+}
+
 fwrite(STDOUT, sprintf("Resultado: %d passaram; %d falharam.\n", $passed, $failed));
 exit($failed === 0 ? 0 : 1);
