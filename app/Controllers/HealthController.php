@@ -13,10 +13,11 @@ final class HealthController
      *
      * @return array{status: int, body: array<string, string>}
      */
-    public function show(): array
+    public function show(array $input = []): array
     {
         try {
-            \createDatabaseConnection();
+            $connection = \createDatabaseConnection();
+            $connection->query('SELECT 1')->fetchColumn();
 
             return [
                 'status' => 200,

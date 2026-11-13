@@ -50,3 +50,13 @@ O backend utiliza PHP 8.2 ou superior, Composer e MySQL/MariaDB. A extensão `pd
    ```
 
    A verificação da aplicação ficará disponível em `http://localhost:8000/health`.
+
+5. Crie localmente as contas que poderão entrar no sistema:
+
+   ```sh
+   php bin/create-user.php
+   ```
+
+   Execute o comando uma vez para cada aluno ou professor. A senha é solicitada no terminal e armazenada como hash.
+
+O login usa a tabela `usuarios`. Alunos consultam e registram as próprias atividades; professores veem a fila e registram decisões em `validacoes`. O fluxo de comprovantes físicos ainda não está disponível.
