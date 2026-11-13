@@ -1,0 +1,14 @@
+{
+    "name": "kinglever/e-labore",
+    "description": "Backend da plataforma E-Labore",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "ELabore\\": "app/"
+        }
+    }
+}
