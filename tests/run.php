@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+$environmentConfiguration = dirname(__DIR__) . '/config/environment.php';
+if (is_file($environmentConfiguration)) {
+    require_once $environmentConfiguration;
+}
 
 $controllerClass = \ELabore\Controllers\HealthController::class;
 
@@ -88,6 +92,32 @@ if (runTest('falha de conexão não expõe credenciais na resposta', static func
     assertDoesNotContain('sensitive_database', $encodedBody, 'A resposta não pode expor o banco.');
     assertDoesNotContain('sensitive_user', $encodedBody, 'A resposta não pode expor o usuário.');
     assertDoesNotContain('sensitive_password', $encodedBody, 'A resposta não pode expor a senha.');
+})) {
+    $passed++;
+} else {
+    $failed++;
+}
+
+if (runTest('arquivo dotenv inválido é tratado sem lançar detalhes ao chamador', static function (): void {
+    $temporaryDirectory = sys_get_temp_dir() . '/elabore-dotenv-' . bin2hex(random_bytes(6));
+    mkdir($temporaryDirectory, 0700, true);
+    file_put_contents($temporaryDirectory . '/.env', "DB_PASSWORD=sentinel malformed value\n");
+
+    $previousErrorLog = (string) ini_get('error_log');
+    $temporaryLog = $temporaryDirectory . '/php-errors.log';
+    ini_set('error_log', $temporaryLog);
+
+    try {
+        $loaded = loadEnvironmentConfiguration($temporaryDirectory);
+        assertSameValue(false, $loaded, 'Um arquivo dotenv inválido deve indicar falha de carregamento.');
+    } finally {
+        ini_set('error_log', $previousErrorLog);
+        if (is_file($temporaryLog)) {
+            unlink($temporaryLog);
+        }
+        unlink($temporaryDirectory . '/.env');
+        rmdir($temporaryDirectory);
+    }
 })) {
     $passed++;
 } else {

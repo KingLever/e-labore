@@ -46,7 +46,7 @@ O backend utiliza PHP 8.2 ou superior, Composer e MySQL/MariaDB. A extensão `pd
 4. Inicie o servidor local pela raiz do projeto:
 
    ```sh
-   php -S localhost:8000 -t public
+   php -S localhost:8000 -t public public/index.php
    ```
 
    A verificação da aplicação ficará disponível em `http://localhost:8000/health`.

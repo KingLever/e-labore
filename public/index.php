@@ -2,14 +2,24 @@
 
 declare(strict_types=1);
 
-use Dotenv\Dotenv;
-
 $projectRoot = dirname(__DIR__);
 
 require $projectRoot . '/vendor/autoload.php';
 require $projectRoot . '/config/database.php';
+require $projectRoot . '/config/environment.php';
 
-Dotenv::createImmutable($projectRoot)->safeLoad();
+if (!loadEnvironmentConfiguration($projectRoot)) {
+    header('Content-Type: application/json; charset=utf-8');
+    http_response_code(503);
+    echo json_encode(
+        [
+            'status' => 'error',
+            'message' => 'Serviço temporariamente indisponível.',
+        ],
+        JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE
+    );
+    exit;
+}
 
 $method = strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 $requestUri = (string) ($_SERVER['REQUEST_URI'] ?? '/');
