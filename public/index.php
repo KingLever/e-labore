@@ -26,6 +26,20 @@ $requestUri = (string) ($_SERVER['REQUEST_URI'] ?? '/');
 $path = parse_url($requestUri, PHP_URL_PATH);
 $path = is_string($path) && $path !== '' ? $path : '/';
 
+// Servidor embutido do PHP: entrega as telas .html da pasta public sem passar pelas rotas.
+if (PHP_SAPI === 'cli-server') {
+    $file = realpath(__DIR__ . $path);
+
+    if (
+        $file !== false
+        && is_file($file)
+        && str_starts_with($file, __DIR__ . DIRECTORY_SEPARATOR)
+        && pathinfo($file, PATHINFO_EXTENSION) === 'html'
+    ) {
+        return false;
+    }
+}
+
 $routes = require $projectRoot . '/routes/web.php';
 $handler = $routes[sprintf('%s %s', $method, $path)] ?? null;
 
@@ -39,6 +53,13 @@ if (!is_callable($handler)) {
     ];
 } else {
     $response = $handler();
+
+    if (isset($response['redirect'])) {
+        header('Location: ' . $response['redirect']);
+        http_response_code($response['status']);
+        exit;
+    }
+
     http_response_code($response['status']);
     $body = $response['body'];
 }
