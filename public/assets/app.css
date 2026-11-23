@@ -1,0 +1,80 @@
+/* E-Labora: identidade visual das telas (cinza, cards com faixa, tabelas e botões do protótipo). */
+:root {
+  --el-barra: #b5b5b5;
+  --el-faixa: #808080;
+  --el-cabecalho-tabela: #999999;
+  --el-linha-a: #bdbdbd;
+  --el-linha-b: #cccccc;
+  --el-borda: #333333;
+}
+
+body { background: #fff; color: #000; }
+
+/* Barra superior */
+.topbar { background: var(--el-barra); }
+.topbar .logo { height: 38px; width: auto; display: block; }
+.logo-login { height: 70px; width: auto; }
+
+/* Título pequeno de cada página (ex.: "Início", "Turmas") */
+.titulo-pagina { font-size: 1.05rem; font-weight: 500; margin-bottom: 1.25rem; }
+
+/* Cards do menu inicial */
+.card-menu {
+  display: block;
+  width: 160px;
+  border: 1px solid var(--el-borda);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  color: #000;
+  text-decoration: none;
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+.card-menu:hover { color: #000; box-shadow: 0 4px 12px rgba(0, 0, 0, .25); transform: translateY(-2px); }
+.card-menu .icone { display: block; text-align: center; font-size: 3.4rem; padding: 1.1rem 0 .9rem; line-height: 1; }
+.card-menu .rotulo { display: block; background: var(--el-faixa); text-align: center; font-size: .85rem; padding: .25rem 0; }
+
+/* Tabelas no estilo do protótipo */
+.table-el { width: 100%; border-collapse: collapse; }
+.table-el th { background: var(--el-cabecalho-tabela); border: 1px solid var(--el-borda); padding: .35rem .75rem; text-align: center; font-weight: 600; }
+.table-el td { border: 1px solid var(--el-borda); padding: .35rem .75rem; vertical-align: middle; }
+.table-el tbody tr:nth-child(odd) td { background: var(--el-linha-a); }
+.table-el tbody tr:nth-child(even) td { background: var(--el-linha-b); }
+.table-el a { color: #000; }
+
+/* Botões */
+.btn-el { background: var(--el-barra); border: 1px solid #8c8c8c; color: #000; border-radius: 4px; }
+.btn-el:hover, .btn-el:focus { background: #9f9f9f; color: #000; border-color: #777; }
+.btn-el-outline { background: #fff; border: 1px solid #000; color: #000; border-radius: 4px; }
+.btn-el-outline:hover { background: #000; color: #fff; }
+
+/* Caixa arredondada da tela "Enviar atividade" */
+.caixa-envio { border: 1px solid #000; border-radius: 28px; overflow: hidden; background: #fff; }
+.caixa-envio .form-control, .caixa-envio .form-select { border: 1px solid #000; border-radius: 6px; }
+.caixa-envio .coluna-esquerda { padding: 1.5rem; }
+@media (min-width: 768px) { .caixa-envio .coluna-direita { border-left: 1px solid #000; } }
+@media (max-width: 767.98px) { .caixa-envio .coluna-direita { border-top: 1px solid #000; } }
+
+/* Área de arrastar arquivos */
+.zona-arquivos {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 240px; padding: 1.5rem; text-align: center; cursor: pointer; color: #333;
+  transition: background .15s ease;
+}
+.zona-arquivos:hover, .zona-arquivos.arrastando { background: #efefef; }
+.zona-arquivos .bi-images { font-size: 4rem; line-height: 1; }
+
+/* Bloco de cada entrega do aluno */
+.item-entrega { border: 1px solid var(--el-borda); border-radius: 6px; background: #fff; }
+.item-entrega .cabecalho { background: var(--el-linha-a); border-bottom: 1px solid var(--el-borda); border-radius: 5px 5px 0 0; }
+
+/* Linha de atividade na lista do aluno */
+.item-atividade { border: 1px solid var(--el-borda); border-radius: 6px; background: #fff; color: #000; text-decoration: none; display: block; }
+a.item-atividade:hover { color: #000; box-shadow: 0 3px 10px rgba(0, 0, 0, .2); }
+.item-atividade.inativa { background: #ececec; color: #6c6c6c; }
+
+/* Selo clicável de turma (botão que remove o vínculo) */
+.selo-turma { border: 1px solid var(--el-borda); background: #fff; color: #000; border-radius: 12px; padding: .1rem .5rem; font-size: .8rem; }
+.selo-turma:hover { background: #f1c0c0; }
+
+.form-control:focus, .form-select:focus, .btn:focus-visible { box-shadow: 0 0 0 .2rem rgba(0, 0, 0, .25); border-color: #000; }
