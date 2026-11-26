@@ -71,7 +71,9 @@ header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: SAMEORIGIN');
 
 session_name('elabore_sessao');
-session_set_cookie_params(['path' => '/', 'httponly' => true, 'samesite' => 'Lax']);
+ini_set('session.use_strict_mode', '1');
+$https = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+session_set_cookie_params(['path' => '/', 'httponly' => true, 'secure' => $https, 'samesite' => 'Lax']);
 session_start();
 
 /**

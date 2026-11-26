@@ -8,12 +8,31 @@ use ELabore\Support\Auth;
 use ELabore\Support\Consultas;
 use ELabore\Support\Db;
 use ELabore\Support\Response;
+use ELabore\Models\Entrega;
 
 /**
  * Tela "Entregas" do professor: acompanha o que os alunos enviaram em cada atividade.
  */
 final class AcompanhamentoController
 {
+    public function validar(int $id, int $entrega): array
+    {
+        $professor = Auth::exigir('professor');
+        $decisao = $_POST['decisao'] ?? '';
+        $observacao = $_POST['observacao'] ?? '';
+        $destino = '/professor/entregas/' . $id;
+        if (!is_string($decisao) || !is_string($observacao)) {
+            return Response::redirect($destino, 'danger', 'Dados inválidos.');
+        }
+        try {
+            (new Entrega(Db::pdo()))->validar($id, $entrega, $professor['id'], $decisao, $observacao);
+        } catch (\OutOfBoundsException) {
+            Response::abort(404, 'Entrega não encontrada.');
+        } catch (\InvalidArgumentException | \DomainException $exception) {
+            return Response::redirect($destino, 'danger', $exception->getMessage());
+        }
+        return Response::redirect($destino, 'success', 'Entrega validada com sucesso.');
+    }
     /** @return array<string, mixed> */
     public function index(): array
     {
@@ -60,7 +79,8 @@ final class AcompanhamentoController
         $alunos->execute([$id]);
 
         $entregas = Db::pdo()->prepare(
-            'SELECT e.*, u.nome AS aluno_nome, TIME_TO_SEC(TIMEDIFF(e.hora_fim, e.hora_inicio)) AS segundos
+            'SELECT e.*, u.nome AS aluno_nome, TIME_TO_SEC(TIMEDIFF(e.hora_fim, e.hora_inicio)) AS segundos,
+                    (SELECT v.observacao FROM validacoes v WHERE v.entrega_id = e.id ORDER BY v.id DESC LIMIT 1) AS observacao_validacao
              FROM entregas e
              JOIN usuarios u ON u.id = e.aluno_id
              WHERE e.atividade_id = ?
@@ -80,7 +100,9 @@ final class AcompanhamentoController
 
             if (isset($resumo[$alunoId])) {
                 $resumo[$alunoId]['total_entregas']++;
-                $resumo[$alunoId]['segundos'] += (int) $entrega['segundos'];
+                if ($entrega['status'] === 'aprovada') {
+                    $resumo[$alunoId]['segundos'] += (int) $entrega['segundos'];
+                }
             }
         }
 

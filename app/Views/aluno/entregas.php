@@ -36,6 +36,7 @@
             <?php endif; ?>
           </div>
           <div class="text-end">
+            <span class="badge text-bg-success"><?= e(fmt_duracao((int) $atividade['segundos_aprovados'])) ?> aprovadas</span>
             <span class="badge <?= $ativa ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= $ativa ? 'Ativa' : 'Inativa' ?></span>
             <?php if ($total > 0): ?>
               <span class="badge text-bg-primary"><i class="bi bi-check2"></i> <?= $total ?> envio<?= $total > 1 ? 's' : '' ?></span>

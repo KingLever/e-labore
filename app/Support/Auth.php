@@ -22,6 +22,7 @@ final class Auth
     public static function entrar(array $usuario): void
     {
         session_regenerate_id(true);
+        unset($_SESSION['_csrf']);
         $_SESSION['usuario'] = [
             'id' => (int) $usuario['id'],
             'nome' => (string) $usuario['nome'],
