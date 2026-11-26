@@ -56,6 +56,18 @@ function fmt_tamanho(int $bytes): string
     return $bytes . ' B';
 }
 
+function status_entrega(string $status): string
+{
+    $opcoes = [
+        'pendente' => ['Pendente', 'warning'],
+        'em_analise' => ['Em análise', 'secondary'],
+        'aprovada' => ['Aprovada', 'success'],
+        'recusada' => ['Recusada', 'danger'],
+    ];
+    [$rotulo, $cor] = $opcoes[$status] ?? ['Indefinido', 'secondary'];
+    return '<span class="badge text-bg-' . $cor . '">' . e($rotulo) . '</span>';
+}
+
 function turma_curta(array $turma): string
 {
     return $turma['curso'] . ' ' . $turma['ano'];

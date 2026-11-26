@@ -50,3 +50,9 @@ O backend utiliza PHP 8.2 ou superior, Composer e MySQL/MariaDB. A extensão `pd
    ```
 
    A verificação da aplicação ficará disponível em `http://localhost:8000/health`.
+
+### Validação de entregas
+
+Na área do professor, acesse Entregas e abra uma atividade. O professor responsável pode aprovar ou recusar registros pendentes ou em análise; recusas exigem uma observação. A decisão é registrada na tabela `validacoes` junto com a atualização do status da entrega. O aluno acompanha o status, a observação e as horas aprovadas na atividade.
+
+Novos cadastros de alunos exigem senha de 10 a 72 bytes. Contas existentes com senhas menores continuam podendo entrar.

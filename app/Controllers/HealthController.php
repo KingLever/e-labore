@@ -16,7 +16,7 @@ final class HealthController
     public function show(): array
     {
         try {
-            \createDatabaseConnection();
+            \createDatabaseConnection()->query('SELECT 1')->fetchColumn();
 
             return [
                 'status' => 200,

@@ -3,6 +3,7 @@
 <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
   <div>
     <p class="titulo-pagina mb-1">Entregas - <?= e($atividade['nome']) ?></p>
+    <p class="small mb-2 fw-semibold">Horas aprovadas: <?= e(fmt_duracao($segundosAprovados)) ?></p>
     <?php if (!empty($atividade['descricao'])): ?>
       <p class="small mb-0" style="white-space: pre-line; max-width: 760px;"><?= e($atividade['descricao']) ?></p>
     <?php endif; ?>
@@ -22,7 +23,7 @@
     <?php foreach ($entregas as $entrega): ?>
       <div class="item-entrega">
         <div class="cabecalho d-flex flex-wrap justify-content-between gap-2 px-3 py-2">
-          <strong><?= e($entrega['titulo']) ?></strong>
+          <strong><?= e($entrega['titulo']) ?> <?= status_entrega($entrega['status']) ?></strong>
           <span class="small">
             <i class="bi bi-calendar3"></i> <?= e(fmt_data($entrega['data'])) ?>
             · <i class="bi bi-clock"></i> <?= e(fmt_hora($entrega['hora_inicio'])) ?> – <?= e(fmt_hora($entrega['hora_fim'])) ?>
@@ -30,6 +31,9 @@
           </span>
         </div>
         <div class="p-3">
+          <?php if (!empty($entrega['observacao_validacao'])): ?>
+            <p class="small"><strong><?= $entrega['status'] === 'recusada' ? 'Motivo da recusa:' : 'Observação do professor:' ?></strong> <?= e($entrega['observacao_validacao']) ?></p>
+          <?php endif; ?>
           <?php if (!empty($entrega['descricao'])): ?>
             <p class="small" style="white-space: pre-line;"><?= e($entrega['descricao']) ?></p>
           <?php endif; ?>

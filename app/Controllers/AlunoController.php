@@ -11,6 +11,7 @@ use ELabore\Support\Flash;
 use ELabore\Support\Response;
 use ELabore\Support\Uploads;
 use DateTimeImmutable;
+use ELabore\Models\Entrega;
 use Throwable;
 
 final class AlunoController
@@ -40,13 +41,14 @@ final class AlunoController
         if ($turma !== null) {
             $consulta = Db::pdo()->prepare(
                 'SELECT a.id, a.nome, a.descricao, a.ativa,
-                        (SELECT COUNT(*) FROM entregas e WHERE e.atividade_id = a.id AND e.aluno_id = ?) AS total_entregas
+                        (SELECT COUNT(*) FROM entregas e WHERE e.atividade_id = a.id AND e.aluno_id = ?) AS total_entregas,
+                        (SELECT COALESCE(SUM(TIME_TO_SEC(TIMEDIFF(e.hora_fim, e.hora_inicio))), 0) FROM entregas e WHERE e.atividade_id = a.id AND e.aluno_id = ? AND e.status = \'aprovada\') AS segundos_aprovados
                  FROM atividades a
                  JOIN atividade_turmas att ON att.atividade_id = a.id
                  WHERE att.turma_id = ?
                  ORDER BY a.ativa DESC, a.criado_em DESC, a.id DESC'
             );
-            $consulta->execute([$aluno['id'], $turma['id']]);
+            $consulta->execute([$aluno['id'], $aluno['id'], $turma['id']]);
             $atividades = $consulta->fetchAll();
         }
 
@@ -70,7 +72,8 @@ final class AlunoController
         }
 
         $consulta = Db::pdo()->prepare(
-            'SELECT e.*, TIME_TO_SEC(TIMEDIFF(e.hora_fim, e.hora_inicio)) AS segundos
+            'SELECT e.*, TIME_TO_SEC(TIMEDIFF(e.hora_fim, e.hora_inicio)) AS segundos,
+                    (SELECT v.observacao FROM validacoes v WHERE v.entrega_id = e.id ORDER BY v.id DESC LIMIT 1) AS observacao_validacao
              FROM entregas e
              WHERE e.atividade_id = ? AND e.aluno_id = ?
              ORDER BY e.data DESC, e.id DESC'
@@ -81,6 +84,7 @@ final class AlunoController
             'titulo' => $atividade['nome'],
             'atividade' => $atividade,
             'entregas' => Consultas::entregasComArquivos($consulta->fetchAll()),
+            'segundosAprovados' => (new Entrega(Db::pdo()))->horasAprovadas($aluno['id'], $id),
         ]);
     }
 

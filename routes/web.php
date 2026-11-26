@@ -58,6 +58,7 @@ return [
 
     'GET /professor/entregas' => [$acompanhamento, 'index'],
     'GET /professor/entregas/{id}' => [$acompanhamento, 'show'],
+    'POST /professor/entregas/{id}/validar/{entrega}' => [$acompanhamento, 'validar'],
 
     // Aluno
     'GET /aluno' => [$aluno, 'home'],

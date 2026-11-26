@@ -18,7 +18,7 @@
 <?php else: ?>
   <div class="table-responsive mb-4">
     <table class="table-el">
-      <thead><tr><th>Aluno</th><th>E-mail</th><th>Entregas</th><th>Horas</th><th>Situação</th></tr></thead>
+      <thead><tr><th>Aluno</th><th>E-mail</th><th>Entregas</th><th>Horas aprovadas</th><th>Situação</th></tr></thead>
       <tbody>
         <?php foreach ($resumo as $linha): ?>
           <tr>
@@ -46,7 +46,7 @@
 <?php else: ?>
   <div class="table-responsive">
     <table class="table-el">
-      <thead><tr><th>Aluno</th><th>Título</th><th>Data</th><th>Horário</th><th>Duração</th><th>Anexos</th></tr></thead>
+      <thead><tr><th>Aluno</th><th>Título</th><th>Data</th><th>Horário</th><th>Duração</th><th>Anexos</th><th>Validação</th></tr></thead>
       <tbody>
         <?php foreach ($entregas as $entrega): ?>
           <tr>
@@ -72,6 +72,20 @@
                   <span class="small text-dark-emphasis">(<?= e(fmt_tamanho((int) $arquivo['tamanho'])) ?>)</span>
                 </div>
               <?php endforeach; ?>
+            </td>
+            <td style="min-width: 230px;">
+              <?= status_entrega($entrega['status']) ?>
+              <?php if (in_array($entrega['status'], ['pendente', 'em_analise'], true)): ?>
+                <form class="mt-2" method="post" action="/professor/entregas/<?= (int) $atividade['id'] ?>/validar/<?= (int) $entrega['id'] ?>">
+                  <?= csrf_field() ?>
+                  <label class="form-label small" for="obs-<?= (int) $entrega['id'] ?>">Observação (obrigatória para recusar)</label>
+                  <textarea class="form-control form-control-sm mb-2" id="obs-<?= (int) $entrega['id'] ?>" name="observacao" maxlength="1000" rows="2"></textarea>
+                  <button class="btn btn-success btn-sm" name="decisao" value="aprovada">Aprovar</button>
+                  <button class="btn btn-outline-danger btn-sm" name="decisao" value="recusada">Recusar</button>
+                </form>
+              <?php elseif (!empty($entrega['observacao_validacao'])): ?>
+                <p class="small mt-2 mb-0"><?= e($entrega['observacao_validacao']) ?></p>
+              <?php endif; ?>
             </td>
           </tr>
         <?php endforeach; ?>

@@ -8,6 +8,7 @@ use ELabore\Support\Auth;
 use ELabore\Support\Db;
 use ELabore\Support\Flash;
 use ELabore\Support\Response;
+use ELabore\Models\Usuario;
 use PDOException;
 
 final class AuthController
@@ -40,11 +41,9 @@ final class AuthController
         $email = strtolower(trim((string) ($_POST['email'] ?? '')));
         $senha = (string) ($_POST['senha'] ?? '');
 
-        $consulta = Db::pdo()->prepare('SELECT id, nome, email, senha_hash, perfil FROM usuarios WHERE email = ? LIMIT 1');
-        $consulta->execute([$email]);
-        $usuario = $consulta->fetch();
+        $usuario = (new Usuario(Db::pdo()))->autenticar($email, $senha);
 
-        if (!is_array($usuario) || !password_verify($senha, (string) $usuario['senha_hash'])) {
+        if ($usuario === null) {
             Flash::guardarCampos(['email' => $email]);
 
             return Response::redirect('/login', 'danger', 'Email ou senha inválidos.');
@@ -79,8 +78,8 @@ final class AuthController
             $erro = 'Informe seu nome.';
         } elseif (strlen($email) > 255 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $erro = 'Informe um email válido.';
-        } elseif (strlen($senha) < 6) {
-            $erro = 'A senha precisa ter pelo menos 6 caracteres.';
+        } elseif (strlen($senha) < 10 || strlen($senha) > 72 || str_contains($senha, "\0")) {
+            $erro = 'A senha precisa ter de 10 a 72 bytes.';
         }
 
         if ($erro !== null) {
@@ -90,10 +89,7 @@ final class AuthController
         }
 
         try {
-            $inserir = Db::pdo()->prepare(
-                'INSERT INTO usuarios (nome, email, senha_hash, perfil) VALUES (?, ?, ?, ?)'
-            );
-            $inserir->execute([$nome, $email, password_hash($senha, PASSWORD_DEFAULT), 'aluno']);
+            (new Usuario(Db::pdo()))->cadastrarAluno($nome, $email, $senha);
         } catch (PDOException $excecao) {
             if ($excecao->getCode() === '23000') {
                 Flash::guardarCampos(['nome' => $nome, 'email' => $email]);

@@ -17,8 +17,8 @@
 
       <div class="mb-4">
         <label for="senha" class="form-label">Senha</label>
-        <input type="password" class="form-control border-dark" id="senha" name="senha" placeholder="Crie uma senha" minlength="6" required>
-        <div class="form-text">Mínimo de 6 caracteres.</div>
+        <input type="password" class="form-control border-dark" id="senha" name="senha" placeholder="Crie uma senha" minlength="10" maxlength="72" required>
+        <div class="form-text">De 10 a 72 bytes.</div>
       </div>
 
       <div class="text-center mb-4">
